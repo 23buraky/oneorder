@@ -1,0 +1,235 @@
+{
+  "common": {
+    "appName": "ONE ORDER",
+    "tagline": "One kitchen. Endless choices.",
+    "loading": "Even geduld..."
+  },
+  "nav": {
+    "menu": "Menu",
+    "login": "Inloggen",
+    "account": "Account",
+    "logout": "Uitloggen",
+    "cart": "Winkelmandje"
+  },
+  "home": {
+    "heading": "Eén keuken. Eindeloos veel keuzes.",
+    "subheading": "Bestel je favoriete gerechten bij ONE ORDER Antwerpen.",
+    "cta": "Bekijk het menu",
+    "loginCta": "Inloggen",
+    "categoriesHeading": "Ontdek ons menu"
+  },
+  "menu": {
+    "title": "Menu",
+    "allCategories": "Alles",
+    "empty": "Geen producten gevonden in deze categorie.",
+    "unavailable": "Nu niet beschikbaar",
+    "from": "vanaf"
+  },
+  "product": {
+    "backToMenu": "Terug naar menu",
+    "quantityLabel": "Aantal",
+    "addToCart": "Toevoegen aan winkelmandje",
+    "added": "Toegevoegd aan je winkelmandje!",
+    "required": "Verplicht",
+    "chooseOne": "Kies er 1",
+    "chooseUpTo": "Kies tot {count}",
+    "chooseExactly": "Kies er {count}",
+    "allergensLabel": "Allergenen",
+    "ingredientsLabel": "Ingrediënten",
+    "unavailableNow": "Dit product is momenteel niet beschikbaar",
+    "notFound": "Product niet gevonden.",
+    "genericError": "Toevoegen mislukt. Probeer het opnieuw."
+  },
+  "cart": {
+    "title": "Winkelmandje",
+    "empty": "Je winkelmandje is leeg.",
+    "subtotal": "Subtotaal",
+    "vat": "BTW",
+    "total": "Totaal",
+    "remove": "Verwijderen",
+    "continueShopping": "Verder winkelen",
+    "checkoutCta": "Afrekenen"
+  },
+  "checkout": {
+    "title": "Afrekenen",
+    "orderType": "Type bestelling",
+    "delivery": "Bezorgen",
+    "pickup": "Afhalen",
+    "contactHeading": "Contactgegevens",
+    "emailLabel": "E-mailadres",
+    "phoneLabel": "Telefoonnummer",
+    "addressHeading": "Bezorgadres",
+    "streetLabel": "Straat",
+    "houseNumberLabel": "Huisnummer",
+    "boxLabel": "Bus (optioneel)",
+    "postalCodeLabel": "Postcode",
+    "cityLabel": "Gemeente",
+    "noteLabel": "Opmerking (optioneel)",
+    "couponLabel": "Kortingscode",
+    "couponApply": "Toepassen",
+    "couponApplied": "Kortingscode toegepast!",
+    "couponInvalid": "Ongeldige kortingscode",
+    "tipLabel": "Fooi",
+    "summaryHeading": "Overzicht",
+    "subtotal": "Subtotaal",
+    "vat": "BTW",
+    "deliveryFee": "Bezorgkosten",
+    "discount": "Korting",
+    "total": "Totaal",
+    "submit": "Bestelling plaatsen",
+    "submitting": "Bezig met bestellen...",
+    "emptyCart": "Je winkelmandje is leeg.",
+    "backToMenu": "Terug naar menu",
+    "genericError": "Bestelling plaatsen mislukt. Probeer het opnieuw.",
+    "deliveryFeeNote": "Bezorgkosten worden berekend op basis van je postcode bij het plaatsen van de bestelling."
+  },
+  "orderConfirmation": {
+    "title": "Bedankt voor je bestelling!",
+    "orderNumber": "Ordernummer",
+    "status": "Status",
+    "estimatedDelivery": "Geschatte bezorgtijd",
+    "minutes": "minuten",
+    "backToMenu": "Verder winkelen",
+    "notFound": "Bestelling niet gevonden.",
+    "provideEmail": "Vul het e-mailadres in dat je bij de bestelling gebruikte.",
+    "emailLabel": "E-mailadres",
+    "view": "Bekijken",
+    "deliveryFee": "Bezorgkosten",
+    "total": "Totaal"
+  },
+  "account": {
+    "nav": {
+      "profile": "Profiel",
+      "orders": "Bestellingen",
+      "addresses": "Adressen",
+      "favorites": "Favorieten",
+      "loyalty": "Loyalty"
+    },
+    "logout": "Uitloggen",
+    "profile": {
+      "title": "Mijn profiel",
+      "firstNameLabel": "Voornaam",
+      "lastNameLabel": "Achternaam",
+      "emailLabel": "E-mailadres",
+      "phoneLabel": "Telefoonnummer",
+      "marketingOptIn": "Ik wil aanbiedingen en nieuws per e-mail ontvangen",
+      "save": "Opslaan",
+      "saving": "Bezig met opslaan...",
+      "saved": "Profiel bijgewerkt!",
+      "genericError": "Opslaan mislukt. Probeer het opnieuw.",
+      "passwordHeading": "Wachtwoord wijzigen",
+      "currentPasswordLabel": "Huidig wachtwoord",
+      "newPasswordLabel": "Nieuw wachtwoord",
+      "changePassword": "Wachtwoord wijzigen",
+      "passwordChanged": "Wachtwoord gewijzigd!",
+      "oauthNotice": "Je bent ingelogd via een social account, dus er is geen wachtwoord om te wijzigen."
+    },
+    "orders": {
+      "title": "Mijn bestellingen",
+      "empty": "Je hebt nog geen bestellingen geplaatst.",
+      "browseMenu": "Bekijk het menu",
+      "view": "Bekijken"
+    },
+    "addresses": {
+      "title": "Mijn adressen",
+      "empty": "Je hebt nog geen adressen opgeslagen.",
+      "addNew": "Nieuw adres toevoegen",
+      "labelLabel": "Label (bv. Thuis, Werk)",
+      "streetLabel": "Straat",
+      "houseNumberLabel": "Huisnummer",
+      "boxLabel": "Bus (optioneel)",
+      "postalCodeLabel": "Postcode",
+      "cityLabel": "Gemeente",
+      "noteLabel": "Opmerking (optioneel)",
+      "setDefault": "Als standaard instellen",
+      "default": "Standaard",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "edit": "Bewerken",
+      "delete": "Verwijderen",
+      "genericError": "Opslaan mislukt. Probeer het opnieuw."
+    },
+    "favorites": {
+      "title": "Mijn favorieten",
+      "empty": "Je hebt nog geen favoriete producten.",
+      "browseMenu": "Bekijk het menu"
+    },
+    "loyalty": {
+      "title": "Loyalty",
+      "pointsLabel": "punten",
+      "currentLevel": "Huidig niveau",
+      "nextLevel": "Nog {points} punten tot {level}",
+      "maxLevel": "Je hebt het hoogste niveau bereikt!",
+      "perksHeading": "Voordelen",
+      "levelsHeading": "Alle niveaus",
+      "historyHeading": "Puntengeschiedenis",
+      "noHistory": "Nog geen puntengeschiedenis.",
+      "freeDelivery": "Gratis bezorging"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "subtitle": "Welkom terug bij ONE ORDER.",
+      "emailLabel": "E-mailadres",
+      "passwordLabel": "Wachtwoord",
+      "submit": "Inloggen",
+      "submitting": "Bezig met inloggen...",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "noAccount": "Nog geen account?",
+      "registerLink": "Registreer hier",
+      "orContinueWith": "of ga verder met",
+      "google": "Doorgaan met Google",
+      "apple": "Doorgaan met Apple",
+      "genericError": "Inloggen mislukt. Controleer je gegevens en probeer opnieuw."
+    },
+    "register": {
+      "title": "Account aanmaken",
+      "subtitle": "Maak een gratis account aan om te bestellen en punten te sparen.",
+      "firstNameLabel": "Voornaam",
+      "lastNameLabel": "Achternaam",
+      "emailLabel": "E-mailadres",
+      "passwordLabel": "Wachtwoord",
+      "passwordHint": "Minstens 8 tekens, met een letter en een cijfer.",
+      "marketingOptIn": "Ik wil aanbiedingen en nieuws per e-mail ontvangen",
+      "submit": "Account aanmaken",
+      "submitting": "Bezig met aanmaken...",
+      "haveAccount": "Heb je al een account?",
+      "loginLink": "Log hier in",
+      "success": "Account aangemaakt! Check je inbox om je e-mailadres te bevestigen.",
+      "genericError": "Registreren is mislukt. Probeer het opnieuw."
+    },
+    "forgotPassword": {
+      "title": "Wachtwoord vergeten",
+      "subtitle": "Vul je e-mailadres in en we sturen je een resetlink.",
+      "emailLabel": "E-mailadres",
+      "submit": "Verstuur resetlink",
+      "submitting": "Bezig met versturen...",
+      "success": "Als dit e-mailadres bij ons bekend is, ontvang je zo een resetlink.",
+      "backToLogin": "Terug naar inloggen"
+    },
+    "resetPassword": {
+      "title": "Nieuw wachtwoord instellen",
+      "subtitle": "Kies een nieuw, sterk wachtwoord voor je account.",
+      "passwordLabel": "Nieuw wachtwoord",
+      "submit": "Wachtwoord opslaan",
+      "submitting": "Bezig met opslaan...",
+      "success": "Je wachtwoord is gewijzigd. Je kan nu inloggen.",
+      "loginLink": "Naar inloggen",
+      "invalidToken": "Deze link is ongeldig of verlopen. Vraag een nieuwe aan.",
+      "genericError": "Er ging iets mis. Probeer het opnieuw."
+    },
+    "verifyEmail": {
+      "title": "E-mailadres bevestigen",
+      "verifying": "Je e-mailadres wordt bevestigd...",
+      "success": "Je e-mailadres is bevestigd! Je kan nu inloggen.",
+      "error": "Deze link is ongeldig of verlopen.",
+      "loginLink": "Naar inloggen"
+    },
+    "callback": {
+      "title": "Even inloggen...",
+      "error": "Inloggen via je account is mislukt.",
+      "loginLink": "Terug naar inloggen"
+    }
+  }
+}

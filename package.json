@@ -1,0 +1,46 @@
+{
+  "name": "one-order",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ONE ORDER - Premium restaurant ordering platform (one kitchen, endless choices)",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@one-order/web",
+    "dev:api": "turbo run dev --filter=@one-order/api",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@one-order/web",
+    "build:api": "turbo run build --filter=@one-order/api",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "type-check": "turbo run type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:generate": "pnpm --filter @one-order/database db:generate",
+    "db:migrate": "pnpm --filter @one-order/database db:migrate",
+    "db:push": "pnpm --filter @one-order/database db:push",
+    "db:migrate:deploy": "pnpm --filter @one-order/database db:migrate:deploy",
+    "db:seed": "pnpm --filter @one-order/database db:seed",
+    "db:import-menu": "pnpm --filter @one-order/database db:import-menu",
+    "db:studio": "pnpm --filter @one-order/database db:studio",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.3",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write"
+    ]
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "common": {
+    "appName": "ONE ORDER",
+    "tagline": "One kitchen. Endless choices.",
+    "loading": "Un instant..."
+  },
+  "nav": {
+    "menu": "Menu",
+    "login": "Se connecter",
+    "account": "Compte",
+    "logout": "Se déconnecter",
+    "cart": "Panier"
+  },
+  "home": {
+    "heading": "Une seule cuisine. Des choix infinis.",
+    "subheading": "Commandez vos plats préférés chez ONE ORDER Anvers.",
+    "cta": "Voir le menu",
+    "loginCta": "Se connecter",
+    "categoriesHeading": "Découvrez notre menu"
+  },
+  "menu": {
+    "title": "Menu",
+    "allCategories": "Tout",
+    "empty": "Aucun produit trouvé dans cette catégorie.",
+    "unavailable": "Actuellement indisponible",
+    "from": "à partir de"
+  },
+  "product": {
+    "backToMenu": "Retour au menu",
+    "quantityLabel": "Quantité",
+    "addToCart": "Ajouter au panier",
+    "added": "Ajouté à votre panier !",
+    "required": "Obligatoire",
+    "chooseOne": "Choisissez-en 1",
+    "chooseUpTo": "Choisissez jusqu'à {count}",
+    "chooseExactly": "Choisissez {count}",
+    "allergensLabel": "Allergènes",
+    "ingredientsLabel": "Ingrédients",
+    "unavailableNow": "Ce produit est actuellement indisponible",
+    "notFound": "Produit introuvable.",
+    "genericError": "Impossible d'ajouter au panier. Veuillez réessayer."
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "subtotal": "Sous-total",
+    "vat": "TVA",
+    "total": "Total",
+    "remove": "Retirer",
+    "continueShopping": "Continuer mes achats",
+    "checkoutCta": "Passer la commande"
+  },
+  "checkout": {
+    "title": "Commande",
+    "orderType": "Type de commande",
+    "delivery": "Livraison",
+    "pickup": "À emporter",
+    "contactHeading": "Coordonnées",
+    "emailLabel": "Adresse e-mail",
+    "phoneLabel": "Numéro de téléphone",
+    "addressHeading": "Adresse de livraison",
+    "streetLabel": "Rue",
+    "houseNumberLabel": "Numéro",
+    "boxLabel": "Boîte (facultatif)",
+    "postalCodeLabel": "Code postal",
+    "cityLabel": "Ville",
+    "noteLabel": "Remarque (facultatif)",
+    "couponLabel": "Code promo",
+    "couponApply": "Appliquer",
+    "couponApplied": "Code promo appliqué !",
+    "couponInvalid": "Code promo invalide",
+    "tipLabel": "Pourboire",
+    "summaryHeading": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "vat": "TVA",
+    "deliveryFee": "Frais de livraison",
+    "discount": "Remise",
+    "total": "Total",
+    "submit": "Passer la commande",
+    "submitting": "Commande en cours...",
+    "emptyCart": "Votre panier est vide.",
+    "backToMenu": "Retour au menu",
+    "genericError": "Impossible de passer la commande. Veuillez réessayer.",
+    "deliveryFeeNote": "Les frais de livraison sont calculés en fonction de votre code postal lors de la commande."
+  },
+  "orderConfirmation": {
+    "title": "Merci pour votre commande !",
+    "orderNumber": "Numéro de commande",
+    "status": "Statut",
+    "estimatedDelivery": "Délai de livraison estimé",
+    "minutes": "minutes",
+    "backToMenu": "Continuer mes achats",
+    "notFound": "Commande introuvable.",
+    "provideEmail": "Entrez l'adresse e-mail utilisée pour cette commande.",
+    "emailLabel": "Adresse e-mail",
+    "view": "Voir",
+    "deliveryFee": "Frais de livraison",
+    "total": "Total"
+  },
+  "account": {
+    "nav": {
+      "profile": "Profil",
+      "orders": "Commandes",
+      "addresses": "Adresses",
+      "favorites": "Favoris",
+      "loyalty": "Fidélité"
+    },
+    "logout": "Se déconnecter",
+    "profile": {
+      "title": "Mon profil",
+      "firstNameLabel": "Prénom",
+      "lastNameLabel": "Nom",
+      "emailLabel": "Adresse e-mail",
+      "phoneLabel": "Numéro de téléphone",
+      "marketingOptIn": "Je souhaite recevoir des offres et actualités par e-mail",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "saved": "Profil mis à jour !",
+      "genericError": "Impossible d'enregistrer. Veuillez réessayer.",
+      "passwordHeading": "Changer le mot de passe",
+      "currentPasswordLabel": "Mot de passe actuel",
+      "newPasswordLabel": "Nouveau mot de passe",
+      "changePassword": "Changer le mot de passe",
+      "passwordChanged": "Mot de passe modifié !",
+      "oauthNotice": "Vous êtes connecté via un compte social, il n'y a donc pas de mot de passe à changer."
+    },
+    "orders": {
+      "title": "Mes commandes",
+      "empty": "Vous n'avez pas encore passé de commande.",
+      "browseMenu": "Voir le menu",
+      "view": "Voir"
+    },
+    "addresses": {
+      "title": "Mes adresses",
+      "empty": "Vous n'avez pas encore d'adresse enregistrée.",
+      "addNew": "Ajouter une nouvelle adresse",
+      "labelLabel": "Libellé (ex. Domicile, Travail)",
+      "streetLabel": "Rue",
+      "houseNumberLabel": "Numéro",
+      "boxLabel": "Boîte (facultatif)",
+      "postalCodeLabel": "Code postal",
+      "cityLabel": "Ville",
+      "noteLabel": "Remarque (facultatif)",
+      "setDefault": "Définir par défaut",
+      "default": "Par défaut",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "genericError": "Impossible d'enregistrer. Veuillez réessayer."
+    },
+    "favorites": {
+      "title": "Mes favoris",
+      "empty": "Vous n'avez pas encore de produits favoris.",
+      "browseMenu": "Voir le menu"
+    },
+    "loyalty": {
+      "title": "Fidélité",
+      "pointsLabel": "points",
+      "currentLevel": "Niveau actuel",
+      "nextLevel": "Encore {points} points pour {level}",
+      "maxLevel": "Vous avez atteint le niveau maximum !",
+      "perksHeading": "Avantages",
+      "levelsHeading": "Tous les niveaux",
+      "historyHeading": "Historique des points",
+      "noHistory": "Pas encore d'historique de points.",
+      "freeDelivery": "Livraison gratuite"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "subtitle": "Bon retour chez ONE ORDER.",
+      "emailLabel": "Adresse e-mail",
+      "passwordLabel": "Mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion en cours...",
+      "forgotPassword": "Mot de passe oublié ?",
+      "noAccount": "Pas encore de compte ?",
+      "registerLink": "Inscrivez-vous ici",
+      "orContinueWith": "ou continuer avec",
+      "google": "Continuer avec Google",
+      "apple": "Continuer avec Apple",
+      "genericError": "Échec de la connexion. Vérifiez vos informations et réessayez."
+    },
+    "register": {
+      "title": "Créer un compte",
+      "subtitle": "Créez un compte gratuit pour commander et gagner des points.",
+      "firstNameLabel": "Prénom",
+      "lastNameLabel": "Nom",
+      "emailLabel": "Adresse e-mail",
+      "passwordLabel": "Mot de passe",
+      "passwordHint": "Au moins 8 caractères, avec une lettre et un chiffre.",
+      "marketingOptIn": "Je souhaite recevoir des offres et actualités par e-mail",
+      "submit": "Créer le compte",
+      "submitting": "Création en cours...",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "loginLink": "Connectez-vous ici",
+      "success": "Compte créé ! Vérifiez votre boîte de réception pour confirmer votre adresse e-mail.",
+      "genericError": "L'inscription a échoué. Veuillez réessayer."
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Entrez votre adresse e-mail et nous vous enverrons un lien de réinitialisation.",
+      "emailLabel": "Adresse e-mail",
+      "submit": "Envoyer le lien",
+      "submitting": "Envoi en cours...",
+      "success": "Si cette adresse e-mail nous est connue, un lien de réinitialisation est en route.",
+      "backToLogin": "Retour à la connexion"
+    },
+    "resetPassword": {
+      "title": "Définir un nouveau mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe fort pour votre compte.",
+      "passwordLabel": "Nouveau mot de passe",
+      "submit": "Enregistrer le mot de passe",
+      "submitting": "Enregistrement...",
+      "success": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.",
+      "loginLink": "Aller à la connexion",
+      "invalidToken": "Ce lien est invalide ou a expiré. Demandez-en un nouveau.",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "verifyEmail": {
+      "title": "Confirmer l'adresse e-mail",
+      "verifying": "Confirmation de votre adresse e-mail...",
+      "success": "Votre adresse e-mail a été confirmée ! Vous pouvez maintenant vous connecter.",
+      "error": "Ce lien est invalide ou a expiré.",
+      "loginLink": "Aller à la connexion"
+    },
+    "callback": {
+      "title": "Connexion en cours...",
+      "error": "La connexion avec votre compte a échoué.",
+      "loginLink": "Retour à la connexion"
+    }
+  }
+}

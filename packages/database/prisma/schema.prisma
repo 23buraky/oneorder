@@ -1,0 +1,927 @@
+// ============================================================
+// ONE ORDER — Prisma Schema
+// PostgreSQL database schema for the full ordering platform.
+// ============================================================
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/client"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum Locale {
+  NL
+  EN
+  FR
+  TR
+}
+
+enum UserRole {
+  CUSTOMER
+  EMPLOYEE
+  ADMIN
+  DRIVER
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  APPLE
+}
+
+enum LoyaltyLevel {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum LoyaltyTransactionType {
+  EARNED
+  REDEEMED
+  EXPIRED
+  ADJUSTED
+}
+
+enum OrderType {
+  DELIVERY
+  PICKUP
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  BANCONTACT
+  IDEAL
+  APPLE_PAY
+  GOOGLE_PAY
+  CASH
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
+  FREE_DELIVERY
+}
+
+// Belgian VAT categories. Rates are configured in VatRateConfig,
+// never hardcoded, so they can be updated when law changes.
+enum VatCategory {
+  FOOD_TAKEAWAY // 6%
+  BEVERAGE_STANDARD // 21%
+  OTHER_STANDARD // 21%
+}
+
+enum NotificationType {
+  ORDER_RECEIVED
+  ORDER_ACCEPTED
+  ORDER_PREPARING
+  ORDER_READY
+  DRIVER_ASSIGNED
+  ORDER_ON_THE_WAY
+  ORDER_DELIVERED
+  ORDER_CANCELLED
+  PROMO
+  ACCOUNT
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  SMS
+}
+
+enum EmployeeRole {
+  KITCHEN
+  CASHIER
+  MANAGER
+}
+
+enum VehicleType {
+  BIKE
+  SCOOTER
+  CAR
+  ON_FOOT
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+  WEB
+}
+
+// ============================================================
+// USERS, AUTH, ADDRESSES
+// ============================================================
+
+model User {
+  id                       String       @id @default(cuid())
+  email                    String       @unique
+  phone                    String?      @unique
+  passwordHash             String? // null when using OAuth
+  authProvider             AuthProvider @default(LOCAL)
+  providerId               String? // Google/Apple subject id
+  firstName                String
+  lastName                 String
+  avatarUrl                String?
+  preferredLocale          Locale       @default(NL)
+  marketingOptIn           Boolean      @default(false)
+  role                     UserRole     @default(CUSTOMER)
+
+  isEmailVerified          Boolean      @default(false)
+  emailVerificationToken   String?      @unique
+  emailVerificationExpires DateTime?
+
+  passwordResetToken       String?      @unique
+  passwordResetExpires     DateTime?
+
+  loyaltyPoints            Int          @default(0)
+  loyaltyLevel             LoyaltyLevel @default(BRONZE)
+
+  deletedAt                DateTime? // soft delete — preserves order/invoice history
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
+
+  addresses                Address[]
+  favorites                FavoriteProduct[]
+  cart                     Cart?
+  orders                   Order[]
+  refreshTokens            RefreshToken[]
+  pushTokens               PushToken[]
+  loyaltyTransactions      LoyaltyTransaction[]
+  couponRedemptions        CouponRedemption[]
+  notificationLogs         NotificationLog[]
+  employee                 Employee?
+  driver                   Driver?
+  mediaUploads             MediaLibraryItem[]
+  orderStatusChanges       OrderStatusHistory[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model RefreshToken {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash    String    @unique
+  deviceInfo   String?
+  ipAddress    String?
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model PushToken {
+  id        String         @id @default(cuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String         @unique
+  platform  DevicePlatform
+  createdAt DateTime       @default(now())
+
+  @@index([userId])
+  @@map("push_tokens")
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label        String // "Thuis", "Werk", ...
+  street       String
+  houseNumber  String
+  box          String?
+  postalCode   String
+  city         String
+  country      String   @default("BE")
+  lat          Float?
+  lng          Float?
+  deliveryNote String?  @db.Text
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders       Order[]
+
+  @@index([userId])
+  @@index([postalCode])
+  @@map("addresses")
+}
+
+// ============================================================
+// MENU: CATEGORIES
+// ============================================================
+
+model Category {
+  id           String                 @id @default(cuid())
+  slug         String                 @unique
+  imageUrl     String?
+  sortOrder    Int                    @default(0)
+  isActive     Boolean                @default(true)
+  parentId     String?
+  parent       Category?              @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children     Category[]             @relation("CategoryHierarchy")
+  deletedAt    DateTime?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  translations CategoryTranslation[]
+  products     Product[]
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+model CategoryTranslation {
+  id              String   @id @default(cuid())
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  locale          Locale
+  name            String
+  description     String?  @db.Text
+  seoTitle        String?
+  seoDescription  String?  @db.Text
+
+  @@unique([categoryId, locale])
+  @@index([locale])
+  @@map("category_translations")
+}
+
+// ============================================================
+// MENU: PRODUCTS
+// ============================================================
+
+model Product {
+  id            String                @id @default(cuid())
+  categoryId    String
+  category      Category              @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  sku           String                @unique
+  basePrice     Decimal               @db.Decimal(10, 2)
+  vatCategory   VatCategory           @default(FOOD_TAKEAWAY)
+  isActive      Boolean               @default(true)
+  stock         Int? // null = unlimited stock
+  sortOrder     Int                   @default(0)
+  deletedAt     DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  translations  ProductTranslation[]
+  images        ProductImage[]
+  variantGroups ProductVariantGroup[]
+  extraGroups   ProductExtraGroup[]
+  ingredients   ProductIngredient[]
+  allergens     ProductAllergen[]
+  availability  ProductAvailability[]
+  favorites     FavoriteProduct[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@map("products")
+}
+
+model ProductTranslation {
+  id          String  @id @default(cuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locale      Locale
+  name        String
+  description String?  @db.Text
+  slug        String
+
+  @@unique([productId, locale])
+  @@unique([locale, slug])
+  @@index([locale])
+  @@map("product_translations")
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String?
+  sortOrder Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+// Variant groups, e.g. "Grootte" -> Klein / Medium / Groot
+model ProductVariantGroup {
+  id           String                           @id @default(cuid())
+  productId    String
+  product      Product                          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sortOrder    Int                              @default(0)
+
+  translations ProductVariantGroupTranslation[]
+  variants     ProductVariant[]
+
+  @@index([productId])
+  @@map("product_variant_groups")
+}
+
+model ProductVariantGroupTranslation {
+  id      String              @id @default(cuid())
+  groupId String
+  group   ProductVariantGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  locale  Locale
+  name    String
+
+  @@unique([groupId, locale])
+  @@map("product_variant_group_translations")
+}
+
+model ProductVariant {
+  id             String                      @id @default(cuid())
+  groupId        String
+  group          ProductVariantGroup         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  priceModifier  Decimal                     @default(0) @db.Decimal(10, 2)
+  sortOrder      Int                         @default(0)
+  isDefault      Boolean                     @default(false)
+
+  translations   ProductVariantTranslation[]
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+
+  @@index([groupId])
+  @@map("product_variants")
+}
+
+model ProductVariantTranslation {
+  id        String         @id @default(cuid())
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  locale    Locale
+  name      String
+
+  @@unique([variantId, locale])
+  @@map("product_variant_translations")
+}
+
+// Extra groups, e.g. "Sauzen" (min 0 max 2) or "Vlees keuze" (required, max 1)
+model ProductExtraGroup {
+  id           String                         @id @default(cuid())
+  productId    String
+  product      Product                        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  minSelect    Int                            @default(0)
+  maxSelect    Int                            @default(1)
+  isRequired   Boolean                        @default(false)
+  sortOrder    Int                            @default(0)
+
+  translations ProductExtraGroupTranslation[]
+  extras       ProductExtra[]
+
+  @@index([productId])
+  @@map("product_extra_groups")
+}
+
+model ProductExtraGroupTranslation {
+  id      String            @id @default(cuid())
+  groupId String
+  group   ProductExtraGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  locale  Locale
+  name    String
+
+  @@unique([groupId, locale])
+  @@map("product_extra_group_translations")
+}
+
+model ProductExtra {
+  id             String                    @id @default(cuid())
+  groupId        String
+  group          ProductExtraGroup         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  priceModifier  Decimal                   @default(0) @db.Decimal(10, 2)
+  isDefault      Boolean                   @default(false)
+  isActive       Boolean                   @default(true)
+  sortOrder      Int                       @default(0)
+
+  translations   ProductExtraTranslation[]
+  cartItemLinks  CartItemExtra[]
+  orderItemLinks OrderItemExtra[]
+
+  @@index([groupId])
+  @@map("product_extras")
+}
+
+model ProductExtraTranslation {
+  id      String       @id @default(cuid())
+  extraId String
+  extra   ProductExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+  locale  Locale
+  name    String
+
+  @@unique([extraId, locale])
+  @@map("product_extra_translations")
+}
+
+model Ingredient {
+  id                String                  @id @default(cuid())
+  isAllergenTrigger  Boolean                @default(false)
+
+  translations       IngredientTranslation[]
+  products            ProductIngredient[]
+
+  @@map("ingredients")
+}
+
+model IngredientTranslation {
+  id           String     @id @default(cuid())
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  locale       Locale
+  name         String
+
+  @@unique([ingredientId, locale])
+  @@map("ingredient_translations")
+}
+
+model ProductIngredient {
+  productId    String
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@id([productId, ingredientId])
+  @@map("product_ingredients")
+}
+
+// 14 official EU allergens
+model Allergen {
+  id           String              @id @default(cuid())
+  icon         String? // icon key/url used in UI
+
+  translations AllergenTranslation[]
+  products     ProductAllergen[]
+
+  @@map("allergens")
+}
+
+model AllergenTranslation {
+  id         String   @id @default(cuid())
+  allergenId String
+  allergen   Allergen @relation(fields: [allergenId], references: [id], onDelete: Cascade)
+  locale     Locale
+  name       String
+
+  @@unique([allergenId, locale])
+  @@map("allergen_translations")
+}
+
+model ProductAllergen {
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  allergenId String
+  allergen   Allergen @relation(fields: [allergenId], references: [id], onDelete: Cascade)
+
+  @@id([productId, allergenId])
+  @@map("product_allergens")
+}
+
+// Restricts a product to certain days/hours, e.g. a lunch-only menu item
+model ProductAvailability {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 0 = Sunday ... 6 = Saturday
+  startTime String // "11:00"
+  endTime   String // "15:00"
+
+  @@index([productId])
+  @@map("product_availability")
+}
+
+model FavoriteProduct {
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, productId])
+  @@map("favorite_products")
+}
+
+// VAT rate per category, editable in admin without a code deploy
+model VatRateConfig {
+  id             String      @id @default(cuid())
+  category       VatCategory @unique
+  ratePercentage Decimal     @db.Decimal(5, 2)
+  updatedAt      DateTime    @updatedAt
+
+  @@map("vat_rate_configs")
+}
+
+// ============================================================
+// CART
+// ============================================================
+
+// A cart belongs to either a logged-in user OR an anonymous guest
+// (identified by an opaque token stored in a browser cookie), never both.
+// Prices are never snapshotted here — the cart always reflects live
+// product/variant/extra pricing, recalculated on every read.
+model Cart {
+  id         String     @id @default(cuid())
+  userId     String?    @unique
+  user       User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guestToken String?    @unique
+  expiresAt  DateTime
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  items      CartItem[]
+
+  @@index([guestToken])
+  @@map("carts")
+}
+
+model CartItem {
+  id                String          @id @default(cuid())
+  cartId            String
+  cart              Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity          Int
+  selectedVariantId String?
+  selectedVariant   ProductVariant? @relation(fields: [selectedVariantId], references: [id], onDelete: SetNull)
+  note              String?         @db.Text
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  extras            CartItemExtra[]
+
+  @@index([cartId])
+  @@index([productId])
+  @@map("cart_items")
+}
+
+model CartItemExtra {
+  id         String       @id @default(cuid())
+  cartItemId String
+  cartItem   CartItem     @relation(fields: [cartItemId], references: [id], onDelete: Cascade)
+  extraId    String
+  extra      ProductExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+  @@unique([cartItemId, extraId])
+  @@map("cart_item_extras")
+}
+
+// ============================================================
+// COUPONS / PROMOTIONS
+// ============================================================
+
+model Coupon {
+  id                String             @id @default(cuid())
+  code              String             @unique
+  type              CouponType
+  value             Decimal            @db.Decimal(10, 2) // percentage or fixed amount depending on type
+  minOrderAmount    Decimal?           @db.Decimal(10, 2)
+  maxDiscountAmount Decimal?           @db.Decimal(10, 2)
+  startsAt          DateTime           @default(now())
+  expiresAt         DateTime?
+  usageLimit        Int? // total redemptions allowed, null = unlimited
+  usageLimitPerUser Int?               @default(1)
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  redemptions       CouponRedemption[]
+  orders            Order[]
+
+  @@index([isActive])
+  @@map("coupons")
+}
+
+model CouponRedemption {
+  id          String   @id @default(cuid())
+  couponId    String
+  coupon      Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  orderId     String   @unique
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  redeemedAt  DateTime @default(now())
+
+  @@index([couponId])
+  @@index([userId])
+  @@map("coupon_redemptions")
+}
+
+// ============================================================
+// ORDERS
+// ============================================================
+
+model Order {
+  id                       String                @id @default(cuid())
+  orderNumber              String                @unique // e.g. ONE-2026-000123
+
+  userId                   String?
+  user                     User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestEmail               String?
+  guestPhone               String?
+
+  type                     OrderType
+  status                   OrderStatus           @default(PENDING)
+  locale                   Locale                @default(NL)
+
+  subtotal                 Decimal               @db.Decimal(10, 2)
+  taxAmount                Decimal               @db.Decimal(10, 2)
+  deliveryFee              Decimal               @default(0) @db.Decimal(10, 2)
+  discountAmount           Decimal               @default(0) @db.Decimal(10, 2)
+  tip                      Decimal               @default(0) @db.Decimal(10, 2)
+  total                    Decimal               @db.Decimal(10, 2)
+
+  couponId                 String?
+  coupon                   Coupon?               @relation(fields: [couponId], references: [id], onDelete: SetNull)
+
+  // Delivery address is snapshotted so historical orders stay accurate
+  // even if the user later edits or deletes the saved address.
+  deliveryAddressId        String?
+  deliveryAddress          Address?              @relation(fields: [deliveryAddressId], references: [id], onDelete: SetNull)
+  deliveryStreetSnapshot   String?
+  deliveryHouseNoSnapshot  String?
+  deliveryPostalSnapshot   String?
+  deliveryCitySnapshot     String?
+  deliveryNote             String?               @db.Text
+
+  estimatedPrepMinutes     Int?
+  estimatedDeliveryMinutes Int?
+  readyAt                  DateTime?
+  deliveredAt              DateTime?
+  cancelledAt              DateTime?
+  cancellationReason       String?               @db.Text
+
+  paymentStatus            PaymentStatus         @default(PENDING)
+  paymentMethod            PaymentMethod?
+  stripePaymentIntentId    String?               @unique
+
+  driverId                 String?
+  driver                   Driver?               @relation(fields: [driverId], references: [id], onDelete: SetNull)
+
+  createdAt                DateTime              @default(now())
+  updatedAt                DateTime              @updatedAt
+
+  items                    OrderItem[]
+  statusHistory            OrderStatusHistory[]
+  invoice                  Invoice?
+  loyaltyTransactions      LoyaltyTransaction[]
+  couponRedemption         CouponRedemption?
+  notificationLogs         NotificationLog[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([driverId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id                          String            @id @default(cuid())
+  orderId                     String
+  order                       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId                   String
+  product                     Product           @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  // Snapshots preserve historical accuracy on the invoice even if the
+  // product is later renamed, repriced, or discontinued.
+  productNameSnapshot         String
+  quantity                    Int
+  unitPrice                   Decimal           @db.Decimal(10, 2)
+  vatCategorySnapshot         VatCategory
+  vatRateSnapshot             Decimal           @db.Decimal(5, 2)
+  lineSubtotal                Decimal           @db.Decimal(10, 2)
+  lineVatAmount               Decimal           @db.Decimal(10, 2)
+  lineTotal                   Decimal           @db.Decimal(10, 2)
+
+  selectedVariantId           String?
+  selectedVariant              ProductVariant?  @relation(fields: [selectedVariantId], references: [id], onDelete: SetNull)
+  variantNameSnapshot          String?
+  variantPriceModifierSnapshot Decimal?         @db.Decimal(10, 2)
+
+  extras                      OrderItemExtra[]
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model OrderItemExtra {
+  id                    String       @id @default(cuid())
+  orderItemId           String
+  orderItem             OrderItem    @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  extraId               String?
+  extra                 ProductExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+  extraNameSnapshot      String
+  priceModifierSnapshot  Decimal      @db.Decimal(10, 2)
+
+  @@index([orderItemId])
+  @@map("order_item_extras")
+}
+
+model OrderStatusHistory {
+  id              String      @id @default(cuid())
+  orderId         String
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status          OrderStatus
+  changedByUserId String?
+  changedByUser   User?       @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+  note            String?
+  createdAt       DateTime    @default(now())
+
+  @@index([orderId])
+  @@map("order_status_history")
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  orderId        String   @unique
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  invoiceNumber  String   @unique
+  pdfUrl         String?
+  subtotal       Decimal  @db.Decimal(10, 2)
+  vatAmount      Decimal  @db.Decimal(10, 2)
+  total          Decimal  @db.Decimal(10, 2)
+  issuedAt       DateTime @default(now())
+
+  @@map("invoices")
+}
+
+// ============================================================
+// LOYALTY
+// ============================================================
+
+model LoyaltyTransaction {
+  id        String                 @id @default(cuid())
+  userId    String
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId   String?
+  order     Order?                 @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  points    Int
+  type      LoyaltyTransactionType
+  reason    String?
+  createdAt DateTime               @default(now())
+
+  @@index([userId])
+  @@map("loyalty_transactions")
+}
+
+model LoyaltyLevelConfig {
+  id                 String       @id @default(cuid())
+  level              LoyaltyLevel @unique
+  minPointsRequired  Int
+  freeDelivery       Boolean      @default(false)
+  perksDescription   String?      @db.Text
+
+  @@map("loyalty_level_configs")
+}
+
+// ============================================================
+// OPERATIONS: ZONES, HOURS, STAFF
+// ============================================================
+
+model DeliveryZone {
+  id                       String   @id @default(cuid())
+  name                     String
+  postalCodes              Json // string[], e.g. ["2000", "2018", "2020"] — MySQL has no native array type
+  deliveryFee              Decimal  @db.Decimal(10, 2)
+  minOrderAmount           Decimal  @db.Decimal(10, 2)
+  estimatedDeliveryMinutes Int
+  isActive                 Boolean  @default(true)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@map("delivery_zones")
+}
+
+model OpeningHours {
+  id        String  @id @default(cuid())
+  dayOfWeek Int     @unique // 0 = Sunday ... 6 = Saturday
+  openTime  String? // "11:00"
+  closeTime String? // "22:00"
+  isClosed  Boolean @default(false)
+
+  @@map("opening_hours")
+}
+
+model OpeningHoursException {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  isClosed  Boolean  @default(true)
+  openTime  String?
+  closeTime String?
+  reason    String? // "Kerstmis", "Interne inventaris", ...
+
+  @@map("opening_hours_exceptions")
+}
+
+model Employee {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         EmployeeRole
+  pinCodeHash  String // fast PIN login for kitchen-view terminal
+  isActive     Boolean      @default(true)
+  hiredAt      DateTime     @default(now())
+
+  @@map("employees")
+}
+
+model Driver {
+  id                 String      @id @default(cuid())
+  userId             String      @unique
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleType        VehicleType
+  isAvailable        Boolean     @default(true)
+  currentLat         Float?
+  currentLng         Float?
+  lastLocationUpdate DateTime?
+
+  orders             Order[]
+
+  @@map("drivers")
+}
+
+// ============================================================
+// MEDIA, NOTIFICATIONS, SETTINGS
+// ============================================================
+
+model MediaLibraryItem {
+  id             String   @id @default(cuid())
+  url            String
+  publicId       String // Cloudinary public id, needed to delete/transform
+  altText        String?
+  mimeType       String
+  width          Int?
+  height         Int?
+  sizeBytes      Int?
+  folder         String? // logical grouping, e.g. "products", "categories"
+  uploadedById   String?
+  uploadedBy     User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt      DateTime @default(now())
+
+  @@index([folder])
+  @@map("media_library_items")
+}
+
+model NotificationLog {
+  id        String              @id @default(cuid())
+  userId    String?
+  user      User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId   String?
+  order     Order?              @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  type      NotificationType
+  channel   NotificationChannel
+  title     String
+  body      String              @db.Text
+  payload   Json?
+  isRead    Boolean             @default(false)
+  sentAt    DateTime?
+  createdAt DateTime            @default(now())
+
+  @@index([userId])
+  @@index([orderId])
+  @@map("notification_logs")
+}
+
+// Generic key-value store for site-wide config (currency, tax defaults, feature flags)
+model Setting {
+  key         String   @id
+  value       String   @db.Text
+  description String?  @db.Text
+  updatedAt   DateTime @updatedAt
+
+  @@map("settings")
+}

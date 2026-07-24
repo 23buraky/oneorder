@@ -1,0 +1,235 @@
+{
+  "common": {
+    "appName": "ONE ORDER",
+    "tagline": "One kitchen. Endless choices.",
+    "loading": "One moment..."
+  },
+  "nav": {
+    "menu": "Menu",
+    "login": "Log in",
+    "account": "Account",
+    "logout": "Log out",
+    "cart": "Cart"
+  },
+  "home": {
+    "heading": "One kitchen. Endless choices.",
+    "subheading": "Order your favorite dishes from ONE ORDER Antwerp.",
+    "cta": "View the menu",
+    "loginCta": "Log in",
+    "categoriesHeading": "Explore our menu"
+  },
+  "menu": {
+    "title": "Menu",
+    "allCategories": "All",
+    "empty": "No products found in this category.",
+    "unavailable": "Currently unavailable",
+    "from": "from"
+  },
+  "product": {
+    "backToMenu": "Back to menu",
+    "quantityLabel": "Quantity",
+    "addToCart": "Add to cart",
+    "added": "Added to your cart!",
+    "required": "Required",
+    "chooseOne": "Choose 1",
+    "chooseUpTo": "Choose up to {count}",
+    "chooseExactly": "Choose {count}",
+    "allergensLabel": "Allergens",
+    "ingredientsLabel": "Ingredients",
+    "unavailableNow": "This product is currently unavailable",
+    "notFound": "Product not found.",
+    "genericError": "Could not add to cart. Please try again."
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "vat": "VAT",
+    "total": "Total",
+    "remove": "Remove",
+    "continueShopping": "Continue shopping",
+    "checkoutCta": "Checkout"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "orderType": "Order type",
+    "delivery": "Delivery",
+    "pickup": "Pickup",
+    "contactHeading": "Contact details",
+    "emailLabel": "Email address",
+    "phoneLabel": "Phone number",
+    "addressHeading": "Delivery address",
+    "streetLabel": "Street",
+    "houseNumberLabel": "House number",
+    "boxLabel": "Box (optional)",
+    "postalCodeLabel": "Postal code",
+    "cityLabel": "City",
+    "noteLabel": "Note (optional)",
+    "couponLabel": "Coupon code",
+    "couponApply": "Apply",
+    "couponApplied": "Coupon applied!",
+    "couponInvalid": "Invalid coupon code",
+    "tipLabel": "Tip",
+    "summaryHeading": "Summary",
+    "subtotal": "Subtotal",
+    "vat": "VAT",
+    "deliveryFee": "Delivery fee",
+    "discount": "Discount",
+    "total": "Total",
+    "submit": "Place order",
+    "submitting": "Placing order...",
+    "emptyCart": "Your cart is empty.",
+    "backToMenu": "Back to menu",
+    "genericError": "Could not place your order. Please try again.",
+    "deliveryFeeNote": "Delivery fee is calculated based on your postal code when the order is placed."
+  },
+  "orderConfirmation": {
+    "title": "Thank you for your order!",
+    "orderNumber": "Order number",
+    "status": "Status",
+    "estimatedDelivery": "Estimated delivery time",
+    "minutes": "minutes",
+    "backToMenu": "Continue shopping",
+    "notFound": "Order not found.",
+    "provideEmail": "Enter the email address used for this order.",
+    "emailLabel": "Email address",
+    "view": "View",
+    "deliveryFee": "Delivery fee",
+    "total": "Total"
+  },
+  "account": {
+    "nav": {
+      "profile": "Profile",
+      "orders": "Orders",
+      "addresses": "Addresses",
+      "favorites": "Favorites",
+      "loyalty": "Loyalty"
+    },
+    "logout": "Log out",
+    "profile": {
+      "title": "My profile",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "emailLabel": "Email address",
+      "phoneLabel": "Phone number",
+      "marketingOptIn": "I want to receive offers and news by email",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Profile updated!",
+      "genericError": "Could not save. Please try again.",
+      "passwordHeading": "Change password",
+      "currentPasswordLabel": "Current password",
+      "newPasswordLabel": "New password",
+      "changePassword": "Change password",
+      "passwordChanged": "Password changed!",
+      "oauthNotice": "You're signed in via a social account, so there's no password to change."
+    },
+    "orders": {
+      "title": "My orders",
+      "empty": "You haven't placed any orders yet.",
+      "browseMenu": "Browse the menu",
+      "view": "View"
+    },
+    "addresses": {
+      "title": "My addresses",
+      "empty": "You don't have any saved addresses yet.",
+      "addNew": "Add new address",
+      "labelLabel": "Label (e.g. Home, Work)",
+      "streetLabel": "Street",
+      "houseNumberLabel": "House number",
+      "boxLabel": "Box (optional)",
+      "postalCodeLabel": "Postal code",
+      "cityLabel": "City",
+      "noteLabel": "Note (optional)",
+      "setDefault": "Set as default",
+      "default": "Default",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "genericError": "Could not save. Please try again."
+    },
+    "favorites": {
+      "title": "My favorites",
+      "empty": "You don't have any favorite products yet.",
+      "browseMenu": "Browse the menu"
+    },
+    "loyalty": {
+      "title": "Loyalty",
+      "pointsLabel": "points",
+      "currentLevel": "Current level",
+      "nextLevel": "{points} points to {level}",
+      "maxLevel": "You've reached the highest level!",
+      "perksHeading": "Perks",
+      "levelsHeading": "All levels",
+      "historyHeading": "Points history",
+      "noHistory": "No points history yet.",
+      "freeDelivery": "Free delivery"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "subtitle": "Welcome back to ONE ORDER.",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register here",
+      "orContinueWith": "or continue with",
+      "google": "Continue with Google",
+      "apple": "Continue with Apple",
+      "genericError": "Login failed. Check your details and try again."
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Create a free account to order and earn points.",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "passwordHint": "At least 8 characters, with a letter and a number.",
+      "marketingOptIn": "I want to receive offers and news by email",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in here",
+      "success": "Account created! Check your inbox to confirm your email address.",
+      "genericError": "Registration failed. Please try again."
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email address and we'll send you a reset link.",
+      "emailLabel": "Email address",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "success": "If this email address is known to us, a reset link is on its way.",
+      "backToLogin": "Back to login"
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "subtitle": "Choose a new, strong password for your account.",
+      "passwordLabel": "New password",
+      "submit": "Save password",
+      "submitting": "Saving...",
+      "success": "Your password has been changed. You can now log in.",
+      "loginLink": "Go to login",
+      "invalidToken": "This link is invalid or has expired. Request a new one.",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "verifyEmail": {
+      "title": "Confirm email address",
+      "verifying": "Confirming your email address...",
+      "success": "Your email address has been confirmed! You can now log in.",
+      "error": "This link is invalid or has expired.",
+      "loginLink": "Go to login"
+    },
+    "callback": {
+      "title": "Logging you in...",
+      "error": "Signing in with your account failed.",
+      "loginLink": "Back to login"
+    }
+  }
+}

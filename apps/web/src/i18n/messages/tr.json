@@ -1,0 +1,235 @@
+{
+  "common": {
+    "appName": "ONE ORDER",
+    "tagline": "One kitchen. Endless choices.",
+    "loading": "Bir saniye..."
+  },
+  "nav": {
+    "menu": "Menü",
+    "login": "Giriş yap",
+    "account": "Hesap",
+    "logout": "Çıkış yap",
+    "cart": "Sepet"
+  },
+  "home": {
+    "heading": "Tek mutfak. Sonsuz seçenek.",
+    "subheading": "ONE ORDER Antwerp'ten favori yemeklerinizi sipariş edin.",
+    "cta": "Menüyü görüntüle",
+    "loginCta": "Giriş yap",
+    "categoriesHeading": "Menümüzü keşfedin"
+  },
+  "menu": {
+    "title": "Menü",
+    "allCategories": "Tümü",
+    "empty": "Bu kategoride ürün bulunamadı.",
+    "unavailable": "Şu anda mevcut değil",
+    "from": "başlangıç"
+  },
+  "product": {
+    "backToMenu": "Menüye dön",
+    "quantityLabel": "Adet",
+    "addToCart": "Sepete ekle",
+    "added": "Sepetinize eklendi!",
+    "required": "Zorunlu",
+    "chooseOne": "1 tane seçin",
+    "chooseUpTo": "En fazla {count} seçin",
+    "chooseExactly": "{count} tane seçin",
+    "allergensLabel": "Alerjenler",
+    "ingredientsLabel": "İçindekiler",
+    "unavailableNow": "Bu ürün şu anda mevcut değil",
+    "notFound": "Ürün bulunamadı.",
+    "genericError": "Sepete eklenemedi. Lütfen tekrar deneyin."
+  },
+  "cart": {
+    "title": "Sepet",
+    "empty": "Sepetiniz boş.",
+    "subtotal": "Ara toplam",
+    "vat": "KDV",
+    "total": "Toplam",
+    "remove": "Kaldır",
+    "continueShopping": "Alışverişe devam et",
+    "checkoutCta": "Ödemeye geç"
+  },
+  "checkout": {
+    "title": "Ödeme",
+    "orderType": "Sipariş türü",
+    "delivery": "Teslimat",
+    "pickup": "Gel al",
+    "contactHeading": "İletişim bilgileri",
+    "emailLabel": "E-posta adresi",
+    "phoneLabel": "Telefon numarası",
+    "addressHeading": "Teslimat adresi",
+    "streetLabel": "Sokak",
+    "houseNumberLabel": "Kapı numarası",
+    "boxLabel": "Kutu (isteğe bağlı)",
+    "postalCodeLabel": "Posta kodu",
+    "cityLabel": "Şehir",
+    "noteLabel": "Not (isteğe bağlı)",
+    "couponLabel": "İndirim kodu",
+    "couponApply": "Uygula",
+    "couponApplied": "İndirim kodu uygulandı!",
+    "couponInvalid": "Geçersiz indirim kodu",
+    "tipLabel": "Bahşiş",
+    "summaryHeading": "Özet",
+    "subtotal": "Ara toplam",
+    "vat": "KDV",
+    "deliveryFee": "Teslimat ücreti",
+    "discount": "İndirim",
+    "total": "Toplam",
+    "submit": "Siparişi ver",
+    "submitting": "Sipariş veriliyor...",
+    "emptyCart": "Sepetiniz boş.",
+    "backToMenu": "Menüye dön",
+    "genericError": "Sipariş verilemedi. Lütfen tekrar deneyin.",
+    "deliveryFeeNote": "Teslimat ücreti, sipariş sırasında posta kodunuza göre hesaplanır."
+  },
+  "orderConfirmation": {
+    "title": "Siparişiniz için teşekkürler!",
+    "orderNumber": "Sipariş numarası",
+    "status": "Durum",
+    "estimatedDelivery": "Tahmini teslimat süresi",
+    "minutes": "dakika",
+    "backToMenu": "Alışverişe devam et",
+    "notFound": "Sipariş bulunamadı.",
+    "provideEmail": "Bu siparişte kullanılan e-posta adresini girin.",
+    "emailLabel": "E-posta adresi",
+    "view": "Görüntüle",
+    "deliveryFee": "Teslimat ücreti",
+    "total": "Toplam"
+  },
+  "account": {
+    "nav": {
+      "profile": "Profil",
+      "orders": "Siparişler",
+      "addresses": "Adresler",
+      "favorites": "Favoriler",
+      "loyalty": "Sadakat"
+    },
+    "logout": "Çıkış yap",
+    "profile": {
+      "title": "Profilim",
+      "firstNameLabel": "Ad",
+      "lastNameLabel": "Soyad",
+      "emailLabel": "E-posta adresi",
+      "phoneLabel": "Telefon numarası",
+      "marketingOptIn": "E-posta ile kampanya ve haberler almak istiyorum",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor...",
+      "saved": "Profil güncellendi!",
+      "genericError": "Kaydedilemedi. Lütfen tekrar deneyin.",
+      "passwordHeading": "Şifreyi değiştir",
+      "currentPasswordLabel": "Mevcut şifre",
+      "newPasswordLabel": "Yeni şifre",
+      "changePassword": "Şifreyi değiştir",
+      "passwordChanged": "Şifre değiştirildi!",
+      "oauthNotice": "Sosyal hesap ile giriş yaptınız, bu yüzden değiştirilecek bir şifre yok."
+    },
+    "orders": {
+      "title": "Siparişlerim",
+      "empty": "Henüz sipariş vermediniz.",
+      "browseMenu": "Menüye göz at",
+      "view": "Görüntüle"
+    },
+    "addresses": {
+      "title": "Adreslerim",
+      "empty": "Henüz kayıtlı adresiniz yok.",
+      "addNew": "Yeni adres ekle",
+      "labelLabel": "Etiket (örn. Ev, İş)",
+      "streetLabel": "Sokak",
+      "houseNumberLabel": "Kapı numarası",
+      "boxLabel": "Kutu (isteğe bağlı)",
+      "postalCodeLabel": "Posta kodu",
+      "cityLabel": "Şehir",
+      "noteLabel": "Not (isteğe bağlı)",
+      "setDefault": "Varsayılan olarak ayarla",
+      "default": "Varsayılan",
+      "save": "Kaydet",
+      "cancel": "İptal",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "genericError": "Kaydedilemedi. Lütfen tekrar deneyin."
+    },
+    "favorites": {
+      "title": "Favorilerim",
+      "empty": "Henüz favori ürününüz yok.",
+      "browseMenu": "Menüye göz at"
+    },
+    "loyalty": {
+      "title": "Sadakat",
+      "pointsLabel": "puan",
+      "currentLevel": "Mevcut seviye",
+      "nextLevel": "{level} için {points} puan kaldı",
+      "maxLevel": "En yüksek seviyeye ulaştınız!",
+      "perksHeading": "Avantajlar",
+      "levelsHeading": "Tüm seviyeler",
+      "historyHeading": "Puan geçmişi",
+      "noHistory": "Henüz puan geçmişi yok.",
+      "freeDelivery": "Ücretsiz teslimat"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş yap",
+      "subtitle": "ONE ORDER'a tekrar hoş geldiniz.",
+      "emailLabel": "E-posta adresi",
+      "passwordLabel": "Şifre",
+      "submit": "Giriş yap",
+      "submitting": "Giriş yapılıyor...",
+      "forgotPassword": "Şifrenizi mi unuttunuz?",
+      "noAccount": "Hesabınız yok mu?",
+      "registerLink": "Buradan kaydolun",
+      "orContinueWith": "veya şununla devam et",
+      "google": "Google ile devam et",
+      "apple": "Apple ile devam et",
+      "genericError": "Giriş başarısız. Bilgilerinizi kontrol edip tekrar deneyin."
+    },
+    "register": {
+      "title": "Hesap oluştur",
+      "subtitle": "Sipariş vermek ve puan kazanmak için ücretsiz hesap oluşturun.",
+      "firstNameLabel": "Ad",
+      "lastNameLabel": "Soyad",
+      "emailLabel": "E-posta adresi",
+      "passwordLabel": "Şifre",
+      "passwordHint": "En az 8 karakter, bir harf ve bir rakam içermeli.",
+      "marketingOptIn": "E-posta ile kampanya ve haberler almak istiyorum",
+      "submit": "Hesap oluştur",
+      "submitting": "Hesap oluşturuluyor...",
+      "haveAccount": "Zaten bir hesabınız var mı?",
+      "loginLink": "Buradan giriş yapın",
+      "success": "Hesap oluşturuldu! E-posta adresinizi onaylamak için gelen kutunuzu kontrol edin.",
+      "genericError": "Kayıt başarısız oldu. Lütfen tekrar deneyin."
+    },
+    "forgotPassword": {
+      "title": "Şifremi unuttum",
+      "subtitle": "E-posta adresinizi girin, size bir sıfırlama bağlantısı gönderelim.",
+      "emailLabel": "E-posta adresi",
+      "submit": "Sıfırlama bağlantısı gönder",
+      "submitting": "Gönderiliyor...",
+      "success": "Bu e-posta adresi bizde kayıtlıysa, bir sıfırlama bağlantısı gönderildi.",
+      "backToLogin": "Girişe dön"
+    },
+    "resetPassword": {
+      "title": "Yeni şifre belirle",
+      "subtitle": "Hesabınız için yeni, güçlü bir şifre seçin.",
+      "passwordLabel": "Yeni şifre",
+      "submit": "Şifreyi kaydet",
+      "submitting": "Kaydediliyor...",
+      "success": "Şifreniz değiştirildi. Artık giriş yapabilirsiniz.",
+      "loginLink": "Girişe git",
+      "invalidToken": "Bu bağlantı geçersiz veya süresi dolmuş. Yeni bir tane isteyin.",
+      "genericError": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
+    },
+    "verifyEmail": {
+      "title": "E-posta adresini onayla",
+      "verifying": "E-posta adresiniz onaylanıyor...",
+      "success": "E-posta adresiniz onaylandı! Artık giriş yapabilirsiniz.",
+      "error": "Bu bağlantı geçersiz veya süresi dolmuş.",
+      "loginLink": "Girişe git"
+    },
+    "callback": {
+      "title": "Giriş yapılıyor...",
+      "error": "Hesabınızla giriş yapılamadı.",
+      "loginLink": "Girişe dön"
+    }
+  }
+}
