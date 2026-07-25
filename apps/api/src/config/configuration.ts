@@ -1,6 +1,8 @@
 export default () => ({
   env: process.env.NODE_ENV,
-  port: parseInt(process.env.API_PORT ?? "4000", 10),
+  // Render/most PaaS providers inject PORT and expect the app to bind to
+  // it; API_PORT stays first for local dev where PORT usually isn't set.
+  port: parseInt(process.env.API_PORT ?? process.env.PORT ?? "4000", 10),
   appUrl: process.env.NEXT_PUBLIC_APP_URL,
   corsOrigin: process.env.CORS_ORIGIN,
 
