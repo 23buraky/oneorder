@@ -17,6 +17,17 @@ const nextConfig = {
   experimental: {
     cpus: 1,
   },
+  // Type-checking and linting run as separate CI steps (pnpm type-check /
+  // pnpm lint) against the same commit, so re-running them inside next
+  // build only duplicates work — and on this host it's what pushes the
+  // build past the memory quota, since tsc's checker is the single
+  // heaviest step. Safe to skip here since it's already covered elsewhere.
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default withNextIntl(nextConfig);
