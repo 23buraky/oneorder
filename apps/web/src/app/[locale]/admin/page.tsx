@@ -1,8 +1,19 @@
 "use client";
 
-import { useDashboardStats } from "@/hooks/use-admin";
+import { useState } from "react";
+import { useDashboardStats, useRestaurantForceClosed, useSetRestaurantForceClosed } from "@/hooks/use-admin";
 import { useRealtimeAdmin } from "@/hooks/use-realtime-admin";
 import { formatPrice } from "@/lib/format";
+import type { DashboardPeriod } from "@/lib/api/admin";
+
+const PERIOD_OPTIONS: { value: DashboardPeriod; label: string }[] = [
+  { value: "TODAY", label: "Vandaag" },
+  { value: "WEEKLY", label: "Deze week" },
+  { value: "MONTHLY", label: "Deze maand" },
+  { value: "YEARLY", label: "Dit jaar" },
+  { value: "ALL", label: "Alles" },
+  { value: "CUSTOM", label: "Periode kiezen" },
+];
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
@@ -13,17 +24,54 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-export default function AdminDashboardPage() {
-  const { data: stats, isLoading } = useDashboardStats();
-  const { lastNewOrder, clearLastNewOrder } = useRealtimeAdmin();
+function RestaurantToggle() {
+  const { data, isLoading } = useRestaurantForceClosed();
+  const setForceClosed = useSetRestaurantForceClosed();
 
-  if (isLoading || !stats) {
-    return <p className="text-sm text-zinc-500">...</p>;
-  }
+  const forceClosed = data?.forceClosed ?? false;
+  const isOpen = !forceClosed;
+
+  return (
+    <div className="mb-6 flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-5">
+      <div>
+        <p className="text-sm font-semibold text-ink">Restaurant status</p>
+        <p className="text-xs text-zinc-500">
+          {isLoading ? "..." : isOpen ? "Open — klanten kunnen bestellen" : "Gesloten — bestellen is uitgeschakeld"}
+        </p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={isOpen}
+        disabled={isLoading || setForceClosed.isPending}
+        onClick={() => setForceClosed.mutate(isOpen)}
+        className={`relative h-8 w-14 shrink-0 rounded-full transition disabled:opacity-50 ${
+          isOpen ? "bg-green-500" : "bg-zinc-300"
+        }`}
+      >
+        <span
+          className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${
+            isOpen ? "left-7" : "left-1"
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
+
+export default function AdminDashboardPage() {
+  const [period, setPeriod] = useState<DashboardPeriod>("TODAY");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+
+  const { data: stats, isLoading } = useDashboardStats({ period, from: from || undefined, to: to || undefined });
+  const { lastNewOrder, clearLastNewOrder } = useRealtimeAdmin();
 
   return (
     <div>
       <h1 className="mb-6 text-2xl font-extrabold text-ink">Dashboard</h1>
+
+      <RestaurantToggle />
 
       {lastNewOrder && (
         <div className="mb-4 flex items-center justify-between rounded-xl border border-gold bg-gold/10 px-4 py-3 text-sm">
@@ -40,24 +88,65 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard label="Bestellingen vandaag" value={stats.todayOrderCount} />
-        <StatCard label="Omzet vandaag" value={formatPrice(stats.todayRevenue)} />
-        <StatCard label="Openstaand" value={stats.pendingOrderCount} />
-        <StatCard label="Producten" value={stats.totalProducts} />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {PERIOD_OPTIONS.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => setPeriod(option.value)}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+              period === option.value
+                ? "bg-ink text-white"
+                : "border border-zinc-300 text-zinc-500 hover:bg-zinc-50"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
-      <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Orders per status</p>
-        <ul className="space-y-2">
-          {stats.ordersByStatus.map((entry) => (
-            <li key={entry.status} className="flex items-center justify-between text-sm">
-              <span className="text-ink">{entry.status}</span>
-              <span className="font-semibold text-ink">{entry.count}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {period === "CUSTOM" && (
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          <input
+            type="date"
+            value={from}
+            onChange={(event) => setFrom(event.target.value)}
+            className="rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-gold"
+          />
+          <span className="text-sm text-zinc-400">tot</span>
+          <input
+            type="date"
+            value={to}
+            onChange={(event) => setTo(event.target.value)}
+            className="rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-gold"
+          />
+        </div>
+      )}
+
+      {isLoading || !stats ? (
+        <p className="text-sm text-zinc-500">...</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <StatCard label="Bestellingen" value={stats.periodOrderCount} />
+            <StatCard label="Omzet" value={formatPrice(stats.periodRevenue)} />
+            <StatCard label="Openstaand" value={stats.pendingOrderCount} />
+            <StatCard label="Producten" value={stats.totalProducts} />
+          </div>
+
+          <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-5">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">Orders per status</p>
+            <ul className="space-y-2">
+              {stats.ordersByStatus.map((entry) => (
+                <li key={entry.status} className="flex items-center justify-between text-sm">
+                  <span className="text-ink">{entry.status}</span>
+                  <span className="font-semibold text-ink">{entry.count}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 }

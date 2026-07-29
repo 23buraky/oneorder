@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { OpeningHoursService } from "./opening-hours.service";
 import { UpdateOpeningHoursDto } from "./dto/update-opening-hours.dto";
 import { CreateOpeningHoursExceptionDto } from "./dto/create-opening-hours-exception.dto";
+import { SetManualOverrideDto } from "./dto/set-manual-override.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../../common/guards/roles.guard";
 import { Roles } from "../../common/decorators/roles.decorator";
@@ -28,6 +29,24 @@ export class OpeningHoursController {
   @ApiOperation({ summary: "List opening hours exceptions (holidays, etc.)" })
   listExceptions() {
     return this.openingHoursService.listExceptions();
+  }
+
+  @Get("manual-override")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("ADMIN")
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get whether the restaurant is manually forced closed (admin only)" })
+  async getManualOverride() {
+    return { forceClosed: await this.openingHoursService.getManualOverride() };
+  }
+
+  @Put("manual-override")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("ADMIN")
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Force the restaurant open/closed regardless of the weekly schedule (admin only)" })
+  setManualOverride(@Body() dto: SetManualOverrideDto) {
+    return this.openingHoursService.setManualOverride(dto.forceClosed);
   }
 
   @Put(":dayOfWeek")

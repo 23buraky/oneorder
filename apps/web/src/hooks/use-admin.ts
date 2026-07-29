@@ -1,13 +1,40 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { getDashboardStats, listAdminOrders, updateOrderStatus } from "@/lib/api/admin";
+import {
+  getDashboardStats,
+  getRestaurantForceClosed,
+  listAdminOrders,
+  setRestaurantForceClosed,
+  updateOrderStatus,
+  type DashboardPeriod,
+} from "@/lib/api/admin";
 
-export function useDashboardStats() {
+export function useDashboardStats(params: { period: DashboardPeriod; from?: string; to?: string }) {
   const { data: session } = useSession();
   return useQuery({
-    queryKey: ["admin", "dashboard"],
-    queryFn: () => getDashboardStats(session!.accessToken),
+    queryKey: ["admin", "dashboard", params],
+    queryFn: () => getDashboardStats(session!.accessToken, params),
+    enabled: Boolean(session?.accessToken) && (params.period !== "CUSTOM" || Boolean(params.from && params.to)),
+  });
+}
+
+export function useRestaurantForceClosed() {
+  const { data: session } = useSession();
+  return useQuery({
+    queryKey: ["admin", "restaurant-force-closed"],
+    queryFn: () => getRestaurantForceClosed(session!.accessToken),
     enabled: Boolean(session?.accessToken),
+  });
+}
+
+export function useSetRestaurantForceClosed() {
+  const { data: session } = useSession();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (forceClosed: boolean) => setRestaurantForceClosed(forceClosed, session!.accessToken),
+    onSuccess: (result) => {
+      queryClient.setQueryData(["admin", "restaurant-force-closed"], result);
+    },
   });
 }
 

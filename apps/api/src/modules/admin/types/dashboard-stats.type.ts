@@ -1,6 +1,6 @@
 export interface DashboardStats {
-  todayOrderCount: number;
-  todayRevenue: number;
+  periodOrderCount: number;
+  periodRevenue: number;
   pendingOrderCount: number;
   ordersByStatus: { status: string; count: number }[];
   totalProducts: number;

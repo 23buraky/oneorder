@@ -8,6 +8,8 @@ export interface OpenStatus {
   reason?: string;
 }
 
+const MANUAL_OVERRIDE_KEY = "restaurant_force_closed";
+
 // See the Date.UTC() comment on isOpenNow(): MySQL DATE columns round-trip
 // through UTC, so any Date built from local y/m/d parts drifts a day in
 // zones ahead of UTC. Every write/read of an exception date must go through here.
@@ -24,6 +26,10 @@ export class OpeningHoursService {
   }
 
   async isOpenNow(now: Date = new Date()): Promise<OpenStatus> {
+    if (await this.getManualOverride()) {
+      return { isOpen: false, reason: "Tijdelijk gesloten" };
+    }
+
     const todayDate = toUtcDateOnly(now);
 
     const exception = await this.prisma.client.openingHoursException.findUnique({
@@ -44,6 +50,24 @@ export class OpeningHoursService {
     }
 
     return { isOpen: this.withinWindow(now, hours.openTime, hours.closeTime) };
+  }
+
+  async getManualOverride(): Promise<boolean> {
+    const setting = await this.prisma.client.setting.findUnique({ where: { key: MANUAL_OVERRIDE_KEY } });
+    return setting?.value === "true";
+  }
+
+  async setManualOverride(forceClosed: boolean): Promise<{ forceClosed: boolean }> {
+    await this.prisma.client.setting.upsert({
+      where: { key: MANUAL_OVERRIDE_KEY },
+      update: { value: String(forceClosed) },
+      create: {
+        key: MANUAL_OVERRIDE_KEY,
+        value: String(forceClosed),
+        description: "Manual admin override to force the restaurant closed regardless of the weekly schedule",
+      },
+    });
+    return { forceClosed };
   }
 
   async updateDay(dayOfWeek: number, dto: UpdateOpeningHoursDto) {

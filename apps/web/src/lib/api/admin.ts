@@ -13,17 +13,37 @@ export interface AdminOrderListItem {
   customerEmail: string | null;
 }
 
+export type DashboardPeriod = "TODAY" | "WEEKLY" | "MONTHLY" | "YEARLY" | "ALL" | "CUSTOM";
+
 export interface DashboardStats {
-  todayOrderCount: number;
-  todayRevenue: number;
+  periodOrderCount: number;
+  periodRevenue: number;
   pendingOrderCount: number;
   ordersByStatus: { status: string; count: number }[];
   totalProducts: number;
   totalCategories: number;
 }
 
-export function getDashboardStats(accessToken: string): Promise<DashboardStats> {
-  return apiRequest<DashboardStats>("/admin/dashboard", { accessToken });
+export function getDashboardStats(
+  accessToken: string,
+  params: { period: DashboardPeriod; from?: string; to?: string },
+): Promise<DashboardStats> {
+  const query = new URLSearchParams({ period: params.period });
+  if (params.from) query.set("from", params.from);
+  if (params.to) query.set("to", params.to);
+  return apiRequest<DashboardStats>(`/admin/dashboard?${query.toString()}`, { accessToken });
+}
+
+export function getRestaurantForceClosed(accessToken: string): Promise<{ forceClosed: boolean }> {
+  return apiRequest("/opening-hours/manual-override", { accessToken });
+}
+
+export function setRestaurantForceClosed(forceClosed: boolean, accessToken: string): Promise<{ forceClosed: boolean }> {
+  return apiRequest("/opening-hours/manual-override", {
+    method: "PUT",
+    body: JSON.stringify({ forceClosed }),
+    accessToken,
+  });
 }
 
 export interface AdminOrdersResult {
