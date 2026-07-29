@@ -9,6 +9,7 @@ import { useAdminProducts, useCreateProduct, useDeleteProduct, useUpdateProduct 
 import { formatPrice } from "@/lib/format";
 import { ApiError } from "@/lib/api/base";
 import type { ProductListItem } from "@/lib/api/products";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 interface FormValues {
   categoryId: string;
@@ -17,6 +18,7 @@ interface FormValues {
   name: string;
   slug: string;
   description: string;
+  imageUrl: string;
 }
 
 function flatCategoryOptions(nodes: { id: string; name: string; children: unknown[] }[], depth = 0): { id: string; label: string }[] {
@@ -38,7 +40,7 @@ export default function AdminProductsPage() {
   const [showNew, setShowNew] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { register, handleSubmit, reset } = useForm<FormValues>();
+  const { register, handleSubmit, reset, watch, setValue } = useForm<FormValues>();
 
   const startEdit = (product: ProductListItem) => {
     setEditing(product);
@@ -49,17 +51,19 @@ export default function AdminProductsPage() {
       name: product.name,
       slug: product.slug,
       description: product.description ?? "",
+      imageUrl: product.primaryImageUrl ?? "",
     });
   };
 
   const startNew = () => {
     setShowNew(true);
     setEditing(null);
-    reset({ categoryId: categories?.[0]?.id ?? "", sku: "", basePrice: 0, name: "", slug: "", description: "" });
+    reset({ categoryId: categories?.[0]?.id ?? "", sku: "", basePrice: 0, name: "", slug: "", description: "", imageUrl: "" });
   };
 
   const onSubmit = async (values: FormValues) => {
     setError(null);
+    const images = values.imageUrl ? [{ url: values.imageUrl, isPrimary: true }] : undefined;
     try {
       if (editing) {
         await updateProduct.mutateAsync({
@@ -68,6 +72,7 @@ export default function AdminProductsPage() {
             sku: values.sku,
             basePrice: Number(values.basePrice),
             translations: [{ locale: "NL", name: values.name, slug: values.slug, description: values.description || undefined }],
+            images,
           },
         });
         setEditing(null);
@@ -77,6 +82,7 @@ export default function AdminProductsPage() {
           sku: values.sku,
           basePrice: Number(values.basePrice),
           translations: [{ locale: "NL", name: values.name, slug: values.slug, description: values.description || undefined }],
+          images,
         });
         setShowNew(false);
       }
@@ -107,6 +113,7 @@ export default function AdminProductsPage() {
 
       {(showNew || editing) && (
         <form onSubmit={handleSubmit(onSubmit)} className="mb-6 max-w-lg space-y-3 rounded-xl border border-zinc-200 bg-white p-4" noValidate>
+          <ImageUpload value={watch("imageUrl")} onChange={(url) => setValue("imageUrl", url)} />
           {showNew && (
             <select
               {...register("categoryId")}
@@ -173,6 +180,7 @@ export default function AdminProductsPage() {
       <table className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white text-sm">
         <thead className="border-b border-zinc-200 bg-zinc-50 text-left text-xs uppercase text-zinc-500">
           <tr>
+            <th className="px-4 py-2" />
             <th className="px-4 py-2">SKU</th>
             <th className="px-4 py-2">Naam</th>
             <th className="px-4 py-2">Prijs</th>
@@ -183,6 +191,12 @@ export default function AdminProductsPage() {
         <tbody>
           {products?.items.map((product) => (
             <tr key={product.id} className="border-b border-zinc-100 last:border-0">
+              <td className="px-4 py-2">
+                {product.primaryImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail of an arbitrary uploaded URL
+                  <img src={product.primaryImageUrl} alt="" className="h-8 w-8 rounded object-cover" />
+                ) : null}
+              </td>
               <td className="px-4 py-2 text-zinc-500">{product.sku}</td>
               <td className="px-4 py-2 text-ink">{product.name}</td>
               <td className="px-4 py-2 text-ink">{formatPrice(product.basePrice)}</td>

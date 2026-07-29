@@ -105,6 +105,7 @@ export interface AdminProductInput {
   stock?: number;
   sortOrder?: number;
   translations: { locale: "NL"; name: string; description?: string; slug: string }[];
+  images?: { url: string; isPrimary?: boolean }[];
 }
 
 export function createProduct(input: AdminProductInput, accessToken: string): Promise<ProductDetail> {

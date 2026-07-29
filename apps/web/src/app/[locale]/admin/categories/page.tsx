@@ -8,11 +8,13 @@ import { useCategoryTree } from "@/hooks/use-categories";
 import { useCreateCategory, useDeleteCategory, useUpdateCategory } from "@/hooks/use-admin-categories";
 import { ApiError } from "@/lib/api/base";
 import type { CategoryNode } from "@/lib/api/categories";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 interface FormValues {
   slug: string;
   name: string;
   description: string;
+  imageUrl: string;
 }
 
 function flatten(nodes: CategoryNode[]): CategoryNode[] {
@@ -30,18 +32,18 @@ export default function AdminCategoriesPage() {
   const [showNew, setShowNew] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { register, handleSubmit, reset } = useForm<FormValues>();
+  const { register, handleSubmit, reset, watch, setValue } = useForm<FormValues>();
 
   const startEdit = (category: CategoryNode) => {
     setEditingId(category.id);
     setShowNew(false);
-    reset({ slug: category.slug, name: category.name, description: category.description ?? "" });
+    reset({ slug: category.slug, name: category.name, description: category.description ?? "", imageUrl: category.imageUrl ?? "" });
   };
 
   const startNew = () => {
     setShowNew(true);
     setEditingId(null);
-    reset({ slug: "", name: "", description: "" });
+    reset({ slug: "", name: "", description: "", imageUrl: "" });
   };
 
   const onSubmit = async (values: FormValues) => {
@@ -50,12 +52,17 @@ export default function AdminCategoriesPage() {
       if (editingId) {
         await updateCategory.mutateAsync({
           id: editingId,
-          input: { slug: values.slug, translations: [{ locale: "NL", name: values.name, description: values.description || undefined }] },
+          input: {
+            slug: values.slug,
+            imageUrl: values.imageUrl || undefined,
+            translations: [{ locale: "NL", name: values.name, description: values.description || undefined }],
+          },
         });
         setEditingId(null);
       } else {
         await createCategory.mutateAsync({
           slug: values.slug,
+          imageUrl: values.imageUrl || undefined,
           translations: [{ locale: "NL", name: values.name, description: values.description || undefined }],
         });
         setShowNew(false);
@@ -84,6 +91,7 @@ export default function AdminCategoriesPage() {
 
       {(showNew || editingId) && (
         <form onSubmit={handleSubmit(onSubmit)} className="mb-6 max-w-md space-y-3 rounded-xl border border-zinc-200 bg-white p-4" noValidate>
+          <ImageUpload value={watch("imageUrl")} onChange={(url) => setValue("imageUrl", url)} />
           <input
             placeholder="Slug (bv. pizzas)"
             {...register("slug")}
@@ -122,6 +130,7 @@ export default function AdminCategoriesPage() {
       <table className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white text-sm">
         <thead className="border-b border-zinc-200 bg-zinc-50 text-left text-xs uppercase text-zinc-500">
           <tr>
+            <th className="px-4 py-2" />
             <th className="px-4 py-2">Naam</th>
             <th className="px-4 py-2">Slug</th>
             <th className="px-4 py-2" />
@@ -130,6 +139,12 @@ export default function AdminCategoriesPage() {
         <tbody>
           {flatCategories.map((category) => (
             <tr key={category.id} className="border-b border-zinc-100 last:border-0">
+              <td className="px-4 py-2">
+                {category.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail of an arbitrary uploaded URL
+                  <img src={category.imageUrl} alt="" className="h-8 w-8 rounded object-cover" />
+                ) : null}
+              </td>
               <td className="px-4 py-2 text-ink">{category.name}</td>
               <td className="px-4 py-2 text-zinc-500">{category.slug}</td>
               <td className="px-4 py-2 text-right">
