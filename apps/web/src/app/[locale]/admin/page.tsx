@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useDashboardStats, useRestaurantForceClosed, useSetRestaurantForceClosed } from "@/hooks/use-admin";
+import {
+  useDashboardStats,
+  useRestaurantOpenStatus,
+  useRestaurantOverride,
+  useSetRestaurantOverride,
+} from "@/hooks/use-admin";
 import { useRealtimeAdmin } from "@/hooks/use-realtime-admin";
 import { formatPrice } from "@/lib/format";
-import type { DashboardPeriod } from "@/lib/api/admin";
+import type { DashboardPeriod, RestaurantOverride } from "@/lib/api/admin";
 
 const PERIOD_OPTIONS: { value: DashboardPeriod; label: string }[] = [
   { value: "TODAY", label: "Vandaag" },
@@ -13,6 +18,12 @@ const PERIOD_OPTIONS: { value: DashboardPeriod; label: string }[] = [
   { value: "YEARLY", label: "Dit jaar" },
   { value: "ALL", label: "Alles" },
   { value: "CUSTOM", label: "Periode kiezen" },
+];
+
+const OVERRIDE_OPTIONS: { value: RestaurantOverride; label: string }[] = [
+  { value: "AUTO", label: "Automatisch" },
+  { value: "OPEN", label: "Geforceerd open" },
+  { value: "CLOSED", label: "Geforceerd dicht" },
 ];
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
@@ -25,36 +36,46 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 }
 
 function RestaurantToggle() {
-  const { data, isLoading } = useRestaurantForceClosed();
-  const setForceClosed = useSetRestaurantForceClosed();
+  const { data: overrideData, isLoading: isLoadingOverride } = useRestaurantOverride();
+  const { data: statusData, isLoading: isLoadingStatus } = useRestaurantOpenStatus();
+  const setOverride = useSetRestaurantOverride();
 
-  const forceClosed = data?.forceClosed ?? false;
-  const isOpen = !forceClosed;
+  const override = overrideData?.override ?? "AUTO";
+  const isOpen = statusData?.isOpen ?? false;
+  const isLoading = isLoadingOverride || isLoadingStatus;
 
   return (
-    <div className="mb-6 flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-5">
-      <div>
+    <div className="mb-6 rounded-xl border border-zinc-200 bg-white p-5">
+      <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-ink">Restaurant status</p>
-        <p className="text-xs text-zinc-500">
-          {isLoading ? "..." : isOpen ? "Open — klanten kunnen bestellen" : "Gesloten — bestellen is uitgeschakeld"}
-        </p>
-      </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={isOpen}
-        disabled={isLoading || setForceClosed.isPending}
-        onClick={() => setForceClosed.mutate(isOpen)}
-        className={`relative h-8 w-14 shrink-0 rounded-full transition disabled:opacity-50 ${
-          isOpen ? "bg-green-500" : "bg-zinc-300"
-        }`}
-      >
         <span
-          className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${
-            isOpen ? "left-7" : "left-1"
-          }`}
-        />
-      </button>
+          className={`flex items-center gap-1.5 text-xs font-semibold ${isOpen ? "text-green-600" : "text-red-500"}`}
+        >
+          <span className={`h-2 w-2 rounded-full ${isOpen ? "bg-green-500" : "bg-red-500"}`} />
+          {isLoading ? "..." : isOpen ? "Nu open — klanten kunnen bestellen" : "Nu dicht — bestellen uitgeschakeld"}
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {OVERRIDE_OPTIONS.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            disabled={setOverride.isPending}
+            onClick={() => setOverride.mutate(option.value)}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${
+              override === option.value
+                ? "bg-ink text-white"
+                : "border border-zinc-300 text-zinc-500 hover:bg-zinc-50"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+      <p className="mt-2 text-xs text-zinc-400">
+        &quot;Automatisch&quot; volgt de ingestelde openingstijden. &quot;Geforceerd&quot; negeert de openingstijden
+        volledig, ook buiten schema.
+      </p>
     </div>
   );
 }

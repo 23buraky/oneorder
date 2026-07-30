@@ -35,9 +35,9 @@ export class OpeningHoursController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Get whether the restaurant is manually forced closed (admin only)" })
+  @ApiOperation({ summary: "Get the current restaurant status override (admin only)" })
   async getManualOverride() {
-    return { forceClosed: await this.openingHoursService.getManualOverride() };
+    return { override: await this.openingHoursService.getManualOverride() };
   }
 
   @Put("manual-override")
@@ -46,7 +46,7 @@ export class OpeningHoursController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Force the restaurant open/closed regardless of the weekly schedule (admin only)" })
   setManualOverride(@Body() dto: SetManualOverrideDto) {
-    return this.openingHoursService.setManualOverride(dto.forceClosed);
+    return this.openingHoursService.setManualOverride(dto.override);
   }
 
   @Put(":dayOfWeek")

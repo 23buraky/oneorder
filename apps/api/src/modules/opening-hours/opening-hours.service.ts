@@ -8,7 +8,9 @@ export interface OpenStatus {
   reason?: string;
 }
 
-const MANUAL_OVERRIDE_KEY = "restaurant_force_closed";
+export type RestaurantOverride = "AUTO" | "OPEN" | "CLOSED";
+
+const MANUAL_OVERRIDE_KEY = "restaurant_override";
 
 // See the Date.UTC() comment on isOpenNow(): MySQL DATE columns round-trip
 // through UTC, so any Date built from local y/m/d parts drifts a day in
@@ -26,7 +28,11 @@ export class OpeningHoursService {
   }
 
   async isOpenNow(now: Date = new Date()): Promise<OpenStatus> {
-    if (await this.getManualOverride()) {
+    const override = await this.getManualOverride();
+    if (override === "OPEN") {
+      return { isOpen: true };
+    }
+    if (override === "CLOSED") {
       return { isOpen: false, reason: "Tijdelijk gesloten" };
     }
 
@@ -52,22 +58,26 @@ export class OpeningHoursService {
     return { isOpen: this.withinWindow(now, hours.openTime, hours.closeTime) };
   }
 
-  async getManualOverride(): Promise<boolean> {
+  async getManualOverride(): Promise<RestaurantOverride> {
     const setting = await this.prisma.client.setting.findUnique({ where: { key: MANUAL_OVERRIDE_KEY } });
-    return setting?.value === "true";
+    if (setting?.value === "OPEN" || setting?.value === "CLOSED") {
+      return setting.value;
+    }
+    return "AUTO";
   }
 
-  async setManualOverride(forceClosed: boolean): Promise<{ forceClosed: boolean }> {
+  async setManualOverride(override: RestaurantOverride): Promise<{ override: RestaurantOverride }> {
     await this.prisma.client.setting.upsert({
       where: { key: MANUAL_OVERRIDE_KEY },
-      update: { value: String(forceClosed) },
+      update: { value: override },
       create: {
         key: MANUAL_OVERRIDE_KEY,
-        value: String(forceClosed),
-        description: "Manual admin override to force the restaurant closed regardless of the weekly schedule",
+        value: override,
+        description:
+          "Manual admin override for restaurant open status: AUTO follows the weekly schedule, OPEN/CLOSED force it regardless of schedule",
       },
     });
-    return { forceClosed };
+    return { override };
   }
 
   async updateDay(dayOfWeek: number, dto: UpdateOpeningHoursDto) {

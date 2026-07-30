@@ -34,14 +34,23 @@ export function getDashboardStats(
   return apiRequest<DashboardStats>(`/admin/dashboard?${query.toString()}`, { accessToken });
 }
 
-export function getRestaurantForceClosed(accessToken: string): Promise<{ forceClosed: boolean }> {
+export type RestaurantOverride = "AUTO" | "OPEN" | "CLOSED";
+
+export function getRestaurantOverride(accessToken: string): Promise<{ override: RestaurantOverride }> {
   return apiRequest("/opening-hours/manual-override", { accessToken });
 }
 
-export function setRestaurantForceClosed(forceClosed: boolean, accessToken: string): Promise<{ forceClosed: boolean }> {
+export function getRestaurantOpenStatus(): Promise<{ isOpen: boolean; reason?: string }> {
+  return apiRequest("/opening-hours/status");
+}
+
+export function setRestaurantOverride(
+  override: RestaurantOverride,
+  accessToken: string,
+): Promise<{ override: RestaurantOverride }> {
   return apiRequest("/opening-hours/manual-override", {
     method: "PUT",
-    body: JSON.stringify({ forceClosed }),
+    body: JSON.stringify({ override }),
     accessToken,
   });
 }

@@ -1,8 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean } from "class-validator";
+import { IsIn } from "class-validator";
 
 export class SetManualOverrideDto {
-  @ApiProperty({ description: "true = force the restaurant closed regardless of schedule" })
-  @IsBoolean()
-  forceClosed!: boolean;
+  @ApiProperty({
+    enum: ["AUTO", "OPEN", "CLOSED"],
+    description: "AUTO follows the weekly schedule, OPEN/CLOSED force it regardless of schedule",
+  })
+  @IsIn(["AUTO", "OPEN", "CLOSED"])
+  override!: "AUTO" | "OPEN" | "CLOSED";
 }

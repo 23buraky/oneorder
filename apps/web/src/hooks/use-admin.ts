@@ -2,11 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import {
   getDashboardStats,
-  getRestaurantForceClosed,
+  getRestaurantOpenStatus,
+  getRestaurantOverride,
   listAdminOrders,
-  setRestaurantForceClosed,
+  setRestaurantOverride,
   updateOrderStatus,
   type DashboardPeriod,
+  type RestaurantOverride,
 } from "@/lib/api/admin";
 
 export function useDashboardStats(params: { period: DashboardPeriod; from?: string; to?: string }) {
@@ -18,23 +20,32 @@ export function useDashboardStats(params: { period: DashboardPeriod; from?: stri
   });
 }
 
-export function useRestaurantForceClosed() {
+export function useRestaurantOverride() {
   const { data: session } = useSession();
   return useQuery({
-    queryKey: ["admin", "restaurant-force-closed"],
-    queryFn: () => getRestaurantForceClosed(session!.accessToken),
+    queryKey: ["admin", "restaurant-override"],
+    queryFn: () => getRestaurantOverride(session!.accessToken),
     enabled: Boolean(session?.accessToken),
   });
 }
 
-export function useSetRestaurantForceClosed() {
+export function useSetRestaurantOverride() {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (forceClosed: boolean) => setRestaurantForceClosed(forceClosed, session!.accessToken),
+    mutationFn: (override: RestaurantOverride) => setRestaurantOverride(override, session!.accessToken),
     onSuccess: (result) => {
-      queryClient.setQueryData(["admin", "restaurant-force-closed"], result);
+      queryClient.setQueryData(["admin", "restaurant-override"], result);
+      queryClient.invalidateQueries({ queryKey: ["admin", "restaurant-open-status"] });
     },
+  });
+}
+
+export function useRestaurantOpenStatus() {
+  return useQuery({
+    queryKey: ["admin", "restaurant-open-status"],
+    queryFn: getRestaurantOpenStatus,
+    refetchInterval: 60_000,
   });
 }
 
