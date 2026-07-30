@@ -5,7 +5,11 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "standalone",
+  // "standalone" output was dropped: its build-trace-collection step is
+  // what kept OOM-killing the build on this host's memory-quota'd shared
+  // hosting. Running via a custom server + regular `next build` output
+  // skips that step entirely — the production directory is assembled with
+  // symlinks into the existing node_modules/.next instead of a traced copy.
   transpilePackages: ["@one-order/database"],
   images: {
     remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
